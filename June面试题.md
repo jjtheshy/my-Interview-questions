@@ -1,3 +1,13 @@
+# 答题技巧:
+
+尽量使用分总结构回答问题
+
+总: 当前问题有什么具体的点
+
+分: 1234  突出技术名词(核心概念,类,接口,核心的方法,)模糊的地方直接跳过去方法的具体执行流程不用说
+
+# 八股文
+
 ## 1.String为什么设计成不可变的？
 
 ​	①为了实现String pool java中有大量的字符串的使用，重复的字符串就直接指向对象
@@ -89,13 +99,138 @@ stream.forEach()循环
 
 
 
+## 12. 为什么HashMap中数组的长度始终是2 << n？
+
+## 散列算法？
+
+## HashMap如何尽量避免Hash碰撞？
+
+​	将key的hashcode的高低16位进行^运算，将结果对数组长度 - 1,进行&运算。
+
+
+
+## 13.ORM和JPA分别什么意思?有什么关系?
+
+ORM: 是一种思想是对象关系映射,是以对象的方式去操作数据库
+
+JPA: 是Java的规范,是基于ORM思想实现的 其常用的注解有
+
+```
+@Entity   加在类上,代表当前类是实体类
+@Table    加载类上,代表实体类映射的哪张表
+@Id		  加在属性上,代表属性映射表中的主键
+@GeneratedValue   加在@Id的属性上,指定主键的生成策略'
+@Column   加在普通的属性上,代表指定映射的字段名
+@Transient  加在普通属性上,代表忽略当前的属性
+```
+
+
+
+## 14. Redis是单线程为什么还这么快?
+
+1. 命令的执行是基于内存的,速度比较快
+2. 命令的执行是单线程的,没有线程切换的开销
+3. 最重要的原因是基于多路复用的NIO模型提升Redis的I/O利用率
+4. 高效的数据存储结构 例如:跳表,压缩列表,等等
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ------
 
-答题技巧:
+# 数据结构和算法
 
-总: 当前问题有什么具体的点
+## 1.单向链表找到倒数第k个元素？
 
-分: 1234  突出技术名词(核心概念,类,接口,核心的方法,)模糊的地方直接跳过去方法的具体执行流程不用说
+快慢指针,快指针走到k-1的位置,然后慢指针和快指针一起走,当快指针指向null时说明链表走到头了,这个时候慢指针指向的位置就是倒数第k个元素
+
+```java
+public class Node{
+	int val;
+	Node next;
+}
+public Node findLastButK(Node head,int k){
+	if(head == null || k <= 0){
+		return null;
+	}
+	Node fast = head;
+	Node slow = head;
+	int j = k - 1;
+	while(fast.next != null){
+		fast = fast.next;
+		j--;
+		if(j == 0){
+			break;
+		}
+	}
+	while(fast.next != null){
+		fast = fast.next;
+		slow = slow.next;
+	}
+	return slow;
+}
+```
+
+## 2.冒泡和快排
 
 
+
+
+
+
+
+## 3.翻转单项链表
+
+```
+public Node reverseNode(Node head){
+	if(head == null || head.next == null) return head;
+	//1. 声明另外两个指针
+	Node pre = null;
+	Node next = null;
+
+	//2. 循环动~~~
+	while(head.next != null){
+		next = head.next;
+		head.next = pre;
+		pre = head;
+		head = next;
+	}
+
+	//3. 最后再动动~~
+	head.next = pre;
+
+	//4. 返回
+	return head;
+}
+链表类：
+public class Node(){
+	int val;
+	Node next;
+}
+```
 
