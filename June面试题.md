@@ -363,3 +363,42 @@ public class Node(){
 }
 ```
 
+
+
+## 4.给出两个字符串，求出两个字符串的最长公共子集序列的长度
+
+例子： 
+	abcdefg，adfg  --> adfg  返回4
+	abcdefg，adgf  --> adf，adg   返回3
+	people，apply  --> ppl  返回3
+
+![image-20220505084208782](https://cdn.jsdelivr.net/gh/jjtheshy/picgo-bed/img/image-20220505084208782.png)
+
+```java
+public int longestCommonSubsequence(String text1,String text2){
+	if(text1 == null || text2 == null) return 0;
+	//1. 获取到字符串长度
+	int m = text1.length();
+	int n = text2.length();
+
+	//2. 声明二位数组
+	int[][] lcs = new int[m+1][n+1];
+
+	//3. 遍历字符串
+	for(int i = 1;i <= m;i++){
+		char c1 = text1.charAt(i - 1);
+		for(int j = 1;j <= n;j++){
+			char c2 = text2.charAt(j - 1);
+			if(c1 == c2){
+				lcs[i][j] = lcs[i-1][j-1] + 1;
+			}else{
+				lcs[i][j] = Math.max(lcs[i-1][j],lcs[i][j-1]);
+			}
+		}
+	}
+
+	//4. 返回最长公共子序列长度
+	return lcs[m][n];
+}
+```
+
