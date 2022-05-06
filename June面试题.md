@@ -128,18 +128,18 @@ JPA: 是Java的规范,是基于ORM思想实现的 其常用的注解有
 
 ## 14. MyBatis一级缓存和二级缓存的区别？
 
+| 区别     | 一级缓存             | 二级缓存                                                     |
+| -------- | -------------------- | ------------------------------------------------------------ |
+| 作用域   | SqlSession           | SqlSessionFactory                                            |
+| 默认开关 | 默认开启             | 默认关闭(全局开关默认开启,映射文件开关默认关闭,select语句开关默认开启) |
+| 存储内容 | 存储对象             | 存储对象的byte[]                                             |
+| 存储过程 | 直接找PerpetualCache | 经过一道Cache链，再查询PerpetualCache                        |
+| Executor | BaseExecutor         | CachingExecutor                                              |
+| 优先级   | 低                   | 高                                                           |
 
 
-| 区别     | 一级缓存             | 二级缓存                              |
-| -------- | -------------------- | ------------------------------------- |
-| 作用域   | SqlSession           | SqlSessionFactory                     |
-| 默认开关 | 默认开启             | 默认关闭                              |
-| 存储内容 | 存储对象             | 存储byte[]                            |
-| 存储过程 | 直接找PerpetualCache | 经过一道Cache链，再查询PerpetualCache |
-| Executor | BaseExecutor         | CachingExecutor                       |
-| 优先级   | 低                   | 高                                    |
 
-
+## 15. 
 
 
 
@@ -301,7 +301,11 @@ AOF(Append Of File): 默认不开启
 
 
 
+## 2. B+树一般不会超过4层,为什么? 好处?
 
+树的高度低就会有更少的IO提升性能
+
+一个数据页大小是16KB 估算一下的3层的b+树大约能存1亿条数据,4层的树能存一千亿条数据
 
 
 
