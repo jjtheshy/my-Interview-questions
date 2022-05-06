@@ -126,6 +126,53 @@ JPA: 是Java的规范,是基于ORM思想实现的 其常用的注解有
 
 
 
+## 14. MyBatis一级缓存和二级缓存的区别？
+
+
+
+| 区别     | 一级缓存             | 二级缓存                              |
+| -------- | -------------------- | ------------------------------------- |
+| 作用域   | SqlSession           | SqlSessionFactory                     |
+| 默认开关 | 默认开启             | 默认关闭                              |
+| 存储内容 | 存储对象             | 存储byte[]                            |
+| 存储过程 | 直接找PerpetualCache | 经过一道Cache链，再查询PerpetualCache |
+| Executor | BaseExecutor         | CachingExecutor                       |
+| 优先级   | 低                   | 高                                    |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # Redis
