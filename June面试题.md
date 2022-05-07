@@ -465,3 +465,34 @@ public int longestCommonSubsequence(String text1,String text2){
 }
 ```
 
+## 5. 使用两个栈结构实现一个队列结构？
+
+栈：先进后出
+队列：先进先出
+
+放数据就是往第一个栈里面放,弹数据如果2栈里面没有就把1里面的数据转到2栈里面,从2栈里面弹出来
+
+```java
+public class Test(){
+	Stack<Integer> stack1 = new Stack();
+	Stack<Integer> stack2 = new Stack();
+
+	public void push(int num){
+		stack1.push(num);
+	}
+
+	public int pop(){
+		if(stack2.empty()){
+			while(!stack1.empty()){
+				stack2.push(stack1.pop());
+			}
+		}
+		return stack2.pop();
+	}
+}
+```
+
+
+
+
+
