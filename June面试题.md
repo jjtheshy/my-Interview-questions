@@ -139,7 +139,100 @@ JPA: 是Java的规范,是基于ORM思想实现的 其常用的注解有
 
 
 
-## 15. 
+## 15. ReentrantLock的实现原理？
+
+ReentrantLock是基于AQS实现,AQS是AbstractQueuedSynchronizer，是JUC包下的一个基类, AQS中主要维护了一个双向链表的队列，以及一个state线程需要获取锁资源时，以CAS尝试将state从0~1，如果修改成功，代表获取锁资源成功，如果修改失败，将其放入队列排队
+
+
+
+## 16. 事务的四大特性?
+
+事务的四大特性
+	原子性：事务是一个最小的执行单位，一次事务操作要么都成功，要么都失败。
+	一致性：
+		1.一次事务前后，数据总量不变。
+		2.事务操作后，必须遵循表的约束。
+		3.事务提交后，预期结果和真实结果是一致的。
+	隔离性：每个事务是独立存在的互不干扰。
+	持久性：一旦提交事务，数据会持久化到磁盘中。
+
+## 17. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -494,5 +587,35 @@ public class Test(){
 
 
 
+## 6. 判断一个单向链表是否有环，并且找到环的触发点
 
+快慢指针
+
+```java
+public Node hasRing(Node head){
+	if(head == null || head.next == null){
+		return null;
+	}
+	// 声明快慢指针
+	Node slow = head;
+	Node fast = head;
+	// 移动
+	while(fast != null && fast.next != null){
+		fast = fast.next.next;
+		slow = slow.next;
+		if(fast == slow){
+			// 有环，找环的触发点
+			fast = head；
+			while(fast != slow){
+				fast = fast.next;
+				slow = slow.next;
+			}
+			// 返回触发点
+			return slow;
+		}
+	}
+	// 没有环
+	return null;
+}
+```
 
