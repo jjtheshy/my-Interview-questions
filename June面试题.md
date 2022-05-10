@@ -372,6 +372,74 @@ AOF(Append Of File): 默认不开启
 > (3)AOF文件大小超过重写策略或手动重写时，会对AOF文件rewrite重写，压缩AOF文件容量；
 > (4)Redis重启后,会重新加在AOF文件的写操作达到数据恢复的目的
 
+## 4. Redis实现限流的三种方式
+
+### 第一种：基于Redis的setnx的操作
+
+> 依靠了setnx的指令，在CAS（Compare and  swap）的操作的时候，同时给指定的key设置了过期实践（expire），我们在限流的主要目的就是为了在单位时间内，有且仅有N数量的请求能够访问我的代码程序。所以依靠setnx可以很轻松的做到这方面的功能。比如我们需要在10秒内限定20个请求，那么我们在setnx的时候可以设置过期时间10，当请求的setnx数量达到20时候即达到了限流效果。
+
+### 第二种：基于Redis的数据结构zset
+
+> 我们可以将请求打造成一个zset数组，当每一次请求进来的时候，value保持唯一，可以用UUID生成，而score可以用当前时间戳表示，因为score我们可以用来计算当前时间戳之内有多少的请求数量。而zset数据结构也提供了range方法让我们可以很轻易的获取到2个时间戳内有多少请求
+
+```java
+public Response limitFlow(){
+        Long currentTime = new Date().getTime();
+        System.out.println(currentTime);
+        if(redisTemplate.hasKey("limit")) {
+            Integer count = redisTemplate.opsForZSet().rangeByScore("limit", currentTime -  intervalTime, currentTime).size();        // intervalTime是限流的时间 
+            System.out.println(count);
+            if (count != null && count > 5) {
+                return Response.ok("每分钟最多只能访问5次");
+            }
+        }
+        redisTemplate.opsForZSet().add("limit",UUID.randomUUID().toString(),currentTime);
+        return Response.ok("访问成功");
+    }
+
+```
+
+### 第三种：基于Redis的令牌桶算法
+
+> 令牌桶算法提及到输入速率和输出速率，当输出速率大于输入速率，那么就是超出流量限制了。也就是说我们每访问一次请求的时候，可以从Redis中获取一个令牌，如果拿到令牌了，那就说明没超出限制，而如果拿不到，则结果相反。依靠上述的思想，我们可以结合Redis的List数据结构很轻易的做到这样的代码
+
+只是简单实现依靠List的leftPop来获取令牌
+
+```
+public Response limitFlow2(Long id){
+        Object result = redisTemplate.opsForList().leftPop("limit_list");
+        if(result == null){
+            return Response.ok("当前令牌桶中无令牌");
+        }
+        return Response.ok(articleDescription2);
+    }
+```
+
+再依靠Java的定时任务，定时往List中rightPush令牌，当然令牌也需要唯一性，所以我这里还是用UUID进行了生成
+
+```java
+// 10S的速率往令牌桶中添加UUID，只为保证唯一性
+    @Scheduled(fixedDelay = 10_000,initialDelay = 0)
+    public void setIntervalTimeTask(){
+        redisTemplate.opsForList().rightPush("limit_list",UUID.randomUUID().toString());
+    }
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
