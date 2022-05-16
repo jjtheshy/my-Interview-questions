@@ -657,7 +657,7 @@ public class Test(){
 
 ## 6. 判断一个单向链表是否有环，并且找到环的触发点
 
-快慢指针
+快慢指针,相遇时将一个指针回到起始位置,再一个走一步再相遇的时候就是触发点
 
 ```java
 public Node hasRing(Node head){
@@ -685,5 +685,39 @@ public Node hasRing(Node head){
 	// 没有环
 	return null;
 }
+```
+
+## 7. 翻转单项链表
+
+```java
+    //递归
+    private Node fanzhuan1(Node top) {
+        Node p = top;
+        if (p==null||p.next == null) {
+            return p;
+        }
+        Node r = fanzhuan1(p.next);
+        p.next.next = p;
+        p.next = null;
+        return r;
+    }
+
+    //三指针
+    private Node fanzhuan2(Node top) {
+        if (top.next == null) return top;
+        Node p1 = top;
+        Node p2 = top.next;
+        Node p3 = top.next.next;
+        p1.next = null;
+        while (p3 != null) {
+            p2.next = p1;
+            p1 = p2;
+            p2 = p3;
+            p3 = p3.next;
+        }
+        //反转最后一个节点
+        p2.next = p1;
+        return p2;
+    }
 ```
 
