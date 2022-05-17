@@ -721,3 +721,81 @@ public Node hasRing(Node head){
     }
 ```
 
+## 8.判断连个链表是否相交
+
+1. 两个链表都不带环：
+   把第一个链表的尾部与第二个链表的头部连接起来。判断第一个链表是否带环。带环就是有交点，不带环就是没有交点。
+2. 两个链表一个带环，一个不带环：
+   一定没有交点。
+3. 两个链表都带环：
+   - 缓存表方式，把第一个链表的元素都存到缓存表中，然后遍历第二个链表的所有
+     元素，比对是否有重复节点。如果没有重复节点则没有交点，反之则有交点。
+   - 把第一个链表的环拆掉，判断第二个链表是否带环。如果带环，则没有交点，如
+     果不带环则有交点。
+
+> 这两个链表分这三种情况进行分类讨论,代码实现如下:
+
+```java
+private boolean xiangjiaobu(Node top1, Node top2) {
+        boolean result1 = youhuanbu(top1);
+        boolean result2 = youhuanbu(top2);
+        if (!result1&&!result2) {//1.都没环
+            //找到第一个链表的尾
+            Node p = top1;
+            while (p.next != null) {
+                p = p.next;
+            }
+            //将第一个链表的尾和第二个链表的头连接
+            p.next = top2;
+            //然后判断链表1是否带环
+            boolean r = youhuanbu(top1);
+            return r;
+        } else if (result1 && result2) {//2.都有环
+            Node p = chufadian(top1);
+            //把一个链表的环断开,如果另一个链表没环了说明二者相交,否者就是不想交
+            p.next = null;
+            boolean r = youhuanbu(top2);
+            return !r;
+        } else { //3.一个有环一个没环,说明两个一定不想交.如果相交那个环肯定是共同都存在的
+            return false;
+        }
+    }
+```
+
+## 9.约瑟夫环
+
+41个人依次报数123-123-123,将数到3的人killed,站多少位置是最后killed的?  (16,31)
+
+```JAVA
+   public void test() {
+        Node top = new Node();
+        Node p = top;
+        for (int i = 1; i <=41; i++) {
+            p.value = i;
+            if (i != 41) {
+                p.next = new Node();
+                p.next.prev = p;
+                p = p.next;
+            }
+        }
+        //将收尾相连
+        p.next = top;
+        top.prev = p;
+
+        p = top;
+        for (int i = 1; ; i++) {
+            if (p.next == p) {
+                System.out.println(p.value + " ");
+                break;
+            }
+            if (i % 3 == 0) { //标号是3的人
+                System.out.println(p.value + " ");
+                //删除标号3的人
+                p.prev.next = p.next;
+                p.next.prev = p.prev;
+            }
+            p = p.next;
+        }
+    }
+```
+
