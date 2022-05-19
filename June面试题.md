@@ -156,15 +156,28 @@ ReentrantLock是基于AQS实现,AQS是AbstractQueuedSynchronizer，是JUC包下�
 	隔离性：每个事务是独立存在的互不干扰。
 	持久性：一旦提交事务，数据会持久化到磁盘中。
 
-## 17. 
+## 17. 关于包装类的缓存区?
 
+jdk1.5后，当需要进行**自动装箱**（Integer.valueOf()），如果在数字在**[-128,127）**之间，会直接使用缓存（**cache[]**）中的对象，而不是重新创建一个对象。**享元设计模式**。
 
+String常量池、数据库连接池、缓冲池都是享元设计模式，享元模式，运用共享技术有效地支持大量细粒度的对象
 
+```
+Byte [-128~127]
+Short [-128~127]
+Integer [-128~127]
+Long  [-128~127]
+Boolean  true false
+Character [0~127]
+Float  new对象  不带缓存
+Double new对象  不带缓存
+```
 
+除了Character和Float Double之外其他的包装类的缓存区都是-128到127之间
 
+## 18. 在java中，匿名内部类对象使用外部方法中的局部变量需要加final关键字，为什么?
 
-
-
+生命周期不同，因为局部变量直接存储在栈中，当方法执行结束，非final的局部变量就被销毁，而局部内部类对局部变量的引用依然存在，当局部内部类要调用局部变量时，就会出错，出现非法引用。
 
 
 
@@ -550,10 +563,22 @@ public Node findLastButK(Node head,int k){
 ## 2.冒泡和快排
 
 ```java
-
+private void bubbleSort(int[] arr) {
+        for (int i = 0; i < arr.length - 1; i++) {
+            for (int j = 0; j < arr.length - i - 1; j++) {
+                if (arr[j] > arr[j + 1]) {
+                    int t = arr[j];
+                    arr[j] = arr[j + 1];
+                    arr[j + 1] = t;
+                }
+            }
+        }
+    }
 ```
 
+```java
 
+```
 
 
 
