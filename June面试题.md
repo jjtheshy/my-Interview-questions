@@ -181,9 +181,27 @@ Double new对象  不带缓存
 
 
 
+## 19. 简述常见的http响应码及含义。
 
-
-
+2xx 成功
+		200 成功
+		201 创建成功
+		202 接收成功
+	3xx 重定向
+		301 永久移动至url
+		302 找到了但是不在原位置
+		303 查看其它内容
+		304 305 使用代理
+	4xx 客户端错误
+		400 请求错误
+		401 授权问题
+		402 需要购买
+		403 禁止请求
+		404 未找到资源
+	5xx 服务器错误
+		500 服务器内部错误
+		504 网关超时
+		505 http版本不匹配
 
 
 
@@ -822,5 +840,127 @@ private boolean xiangjiaobu(Node top1, Node top2) {
             p = p.next;
         }
     }
+```
+
+## 10. 走阶梯，有n级台阶一次可以走一级、两级或者三级问一共有多少种上法？
+
+```java
+public class Test11 {
+
+    /**
+     * 五十级台阶的结果是：10562230626642，缓存表优化后，耗时2毫秒。
+     *                  10562230626642，使用循环优化后，耗时0毫秒。
+     * @param args
+     */
+    public static void main(String[] args) {
+        /**
+         * 1 1 1 1 1 1
+         * 2 1 1 1 1
+         * 1 2 1 1 1
+         * 1 1 2 1 1
+         * 1 1 1 2 1
+         * 1 1 1 1 2
+         * 3 1 1 1
+         * 1 3 1 1
+         * 1 1 3 1
+         * 1 1 1 3
+         * 2 2 1 1
+         * 2 1 2 1
+         * 2 1 1 2
+         * 1 2 2 1
+         * 1 2 1 2
+         * 1 1 2 2
+         * 3 3
+         * 1 2 3
+         * 1 3 2
+         * 2 1 3
+         * 2 3 1
+         * 3 2 1
+         * 3 1 2
+         * 2 2 2
+         */
+        long startTime=System.currentTimeMillis();
+        System.out.println(f3(50));
+        System.out.println("总耗时为："+(System.currentTimeMillis()-startTime)+"毫秒");
+    }
+
+
+    /**
+     * 1 2 4 7 13
+     * a b c d
+     *   a b c d
+     * 循环改造递归。
+     */
+    private static long f3(long n){
+        if(n==1){
+            return 1;
+        }
+        if(n==2){
+            return 2;
+        }
+        if(n==3){
+            return 4;
+        }
+        long a=1;
+        long b=2;
+        long c=4;
+        long d=0;
+        for (int i = 0; i < n-3; i++) {
+            d=a+b+c;
+            a=b;
+            b=c;
+            c=d;
+        }
+        return d;
+    }
+
+    /**
+     * 使用缓存表优化方案优化裂项式递归
+     *
+     */
+    private static HashMap<Long,Long> cache=new HashMap<>();
+    private static long f2(long n){
+        if(n==1){
+            return 1;
+        }
+        if(n==2){
+            return 2;
+        }
+        if(n==3){
+            return 4;
+        }
+        //从缓存中取出结果
+        Long cacheResult = cache.get(n);
+        if(cacheResult!=null){
+            //结果不为空就直接返回
+            return cacheResult;
+        }
+        //如果上面没返回就说明这个n没有计算过，那就计算一下
+        cacheResult=f2(n-1)+f2(n-2)+f2(n-3);
+        //把计算的结果放进缓存表中
+        cache.put(n,cacheResult);
+        //返回结果
+        return cacheResult;
+    }
+    /**
+     * f1(n)
+     * n<=3  f1(1)=1  f1(2)=2  f1(3)=4
+     * n>3   f1(n)=f1(n-1)+f1(n-2)+f1(n-3)
+     * @param n
+     * @return
+     */
+    private static long f1(long n){
+        if(n==1){
+            return 1;
+        }
+        if(n==2){
+            return 2;
+        }
+        if(n==3){
+            return 4;
+        }
+        return f1(n-1)+f1(n-2)+f1(n-3);
+    }
+}
 ```
 
