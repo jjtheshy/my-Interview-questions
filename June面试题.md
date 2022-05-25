@@ -210,9 +210,9 @@ Double new对象  不带缓存
 3、每个字节对应的数字取查表找到对应的字符。
 4、把所有部分的字符按顺序组合起来。
 源数据n个字节
-当n%3==0，就是正好的情况。
-当n%3==1，最后补两个=号。
-当n%3==2，最后补一个=号。
+当n%3\==0，就是正好的情况。
+当n%3\==1，最后补两个=号。
+当n%3\==2，最后补一个=号。
 
 包涵65种
 
@@ -230,19 +230,22 @@ Base64编码中包含了/和=，这两个字符在url有其他含义，因此不
 
 双轴快速排序: 双轴快排是为了减小出现基准数pivot出现选择的是最大最小的概率,如果基准数选的是最大或最小值快排的时间复杂度是最坏的情况O(n^2^)
 
+![JDK快速排序](https://alibabapicbed.oss-cn-beijing.aliyuncs.com/img/JDK快速排序.png?Expires=1653484707&OSSAccessKeyId=TMP.3Kj1y464J5mHMm9jtNuzuDkhafPEGDgFFcxHNj3Tpf6TDYuWrnjcrckDs1PPhCgXJupVgiEuNv2Qwoe9XLDjXFDeG86PyF&Signature=A4852rRMLw3MmHlvT0ft3D1ofGs%3D)
 
 
 
+## 23 .SpringMVC中方法返回一个View，用一个AJAX调用这个方法，页面会跳转吗？为什么？
 
+不会发生跳转。SpringMVC返回的View本质上就是jsp，jsp本质上就是打印html格式的数据。AJAX里的XMLHttpRequest对象的响应数据里，出现的都是html数据。如果是浏览器的请求对象，那么就会发生跳转。也就是说，对于跳转这件事情而言，不仅仅是后端需要提供数据，前端也应该使用对应的请求对象。
 
+## 24. SpringBoot有什么好处，为什么现在推荐使用SpringBoot？
 
-
-
-
-
-
-
-
+1、简化配置，使得工程开发更加简单。
+2、内置Tomcat 无需打包成war  而是打包成jar，在任意JVM环境下都可以运行，使得运维方便。贴合容器技术。
+3、使用xxxx-starter管理依赖，并统一进行版本控制。
+4、大量的自动配置，方便集成第三方。
+5、对于spring而言无需xml配置，减少代码冗余，开箱即用。
+6、向后兼容SpringCloud，为以后项目升级与重构提供便捷。
 
 
 
@@ -608,7 +611,37 @@ private void bubbleSort(int[] arr) {
 ```
 
 ```java
-
+    private void quickSort(int[] arr, int left, int right) {
+        if (left >= right) {
+            return;
+        }
+        int i = left;
+        int j = right;
+        while (left < right) {
+            //从后往前
+            for (; left < right; right--) {
+                if (arr[right] < arr[left]) {
+                    int temp = arr[left];
+                    arr[left] = arr[right];
+                    arr[right] = temp;
+                    left++;
+                    break;
+                }
+            }
+            //从前往后
+            for (; left < right; left++) {
+                if (arr[left] > arr[right]) {
+                    int temp = arr[left];
+                    arr[left] = arr[right];
+                    arr[right] = temp;
+                    right--;
+                    break;
+                }
+            }
+        }
+        quickSort(arr, i, left - 1);
+        quickSort(arr, left + 1, j);
+    }
 ```
 
 
