@@ -230,7 +230,7 @@ Base64编码中包含了/和=，这两个字符在url有其他含义，因此不
 
 双轴快速排序: 双轴快排是为了减小出现基准数pivot出现选择的是最大最小的概率,如果基准数选的是最大或最小值快排的时间复杂度是最坏的情况O(n^2^)
 
-![JDK快速排序](https://alibabapicbed.oss-cn-beijing.aliyuncs.com/img/JDK快速排序.png?Expires=1653484707&OSSAccessKeyId=TMP.3Kj1y464J5mHMm9jtNuzuDkhafPEGDgFFcxHNj3Tpf6TDYuWrnjcrckDs1PPhCgXJupVgiEuNv2Qwoe9XLDjXFDeG86PyF&Signature=A4852rRMLw3MmHlvT0ft3D1ofGs%3D)
+![JDK快速排序](https://alibabapicbed.oss-cn-beijing.aliyuncs.com/img/JDK快速排序.png)
 
 
 
@@ -247,7 +247,37 @@ Base64编码中包含了/和=，这两个字符在url有其他含义，因此不
 5、对于spring而言无需xml配置，减少代码冗余，开箱即用。
 6、向后兼容SpringCloud，为以后项目升级与重构提供便捷。
 
+## 25. 你开发时数据库建表的依据是什么？
 
+业务领域模型->ER图->3NF->建表
+三大范式:
+```
+第一范式：要求一张表中的数据每一列都是不可分割的原子项数据
+第二范式：消除部分依赖，要求一张表中的每一列都完全依赖于主键(针对于组合主键)，也就是不会出现某一列只和部分主键相关
+第三范式：消除传递依赖，要求一张表中的每一列都和主键是直接依赖的，不是间接依赖
+```
+
+## 26. 如何对jvm进行内存监控？常用工具？怎么查看线程是否死锁？
+
+windows下面可以直接使用jdk里面带的带图形界面的工具操作	
+
+jconsole
+jmc
+jvisualvm
+
+Linux下
+
+1. 先用top查看cup占用情况找到java占用的pid
+2. ps -mp这个pid占用cpu情况查出来,可以查看出这个进程下的线程tid占用情况
+3. 使用jstack pid | grep tid >>problem.txt 查看一下具体哪行代码出现死锁或者其他的情况
+
+## 27. 简述SSM工程的集成过程。
+
+​	1、复制依赖
+​	2、写配置文件
+​	web.xml applicationContext.xml application-tx.xml transaction.xml
+​	springBean.xml springMVC.xml mybatisConfig.xml ...
+​	3、配置tomcat，项目打包成war 部署到tomcat上运行。
 
 
 
@@ -328,7 +358,7 @@ Base64编码中包含了/和=，这两个字符在url有其他含义，因此不
 
 ## 2. Redis的底层数据结构
 
-![db-redis-object-2-2](https://cdn.jsdelivr.net/gh/jjtheshy/picgo-bed/img/db-redis-object-2-2.png)
+![db-redis-object-2-2](https://alibabapicbed.oss-cn-beijing.aliyuncs.com/img/db-redis-object-2-2.png)
 
 - 简单动态字符串 - sds
 - 压缩列表 - ZipList
@@ -351,7 +381,7 @@ Base64编码中包含了/和=，这两个字符在url有其他含义，因此不
 
 为什么使用SDS
 
-![image-20220503193710440](https://cdn.jsdelivr.net/gh/jjtheshy/picgo-bed/img/image-20220503193710440.png)
+![image-20220503193710440](https://alibabapicbed.oss-cn-beijing.aliyuncs.com/img/image-20220503193710440.png)
 
 - **常数复杂度获取字符串长度**
 
@@ -371,7 +401,7 @@ Base64编码中包含了/和=，这两个字符在url有其他含义，因此不
 
 > 它是一种以ziplist为结点的双端链表结构. 宏观上, quicklist是一个链表, 微观上, 链表中的每个结点都是一个ziplist。
 
-![db-redis-ds-x-4](https://cdn.jsdelivr.net/gh/jjtheshy/picgo-bed/img/db-redis-ds-x-4.png)
+![db-redis-ds-x-4](https://alibabapicbed.oss-cn-beijing.aliyuncs.com/img/db-redis-ds-x-4.png)
 
 
 
@@ -381,7 +411,7 @@ Base64编码中包含了/和=，这两个字符在url有其他含义，因此不
 
 ## 跳表 - ZSkipList
 
-![db-redis-ds-x-10](https://cdn.jsdelivr.net/gh/jjtheshy/picgo-bed/img/db-redis-ds-x-10.png)
+![db-redis-ds-x-10](https://alibabapicbed.oss-cn-beijing.aliyuncs.com/img/db-redis-ds-x-10.png)
 
 
 
@@ -685,7 +715,7 @@ public class Node(){
 	abcdefg，adgf  --> adf，adg   返回3
 	people，apply  --> ppl  返回3
 
-![image-20220505084208782](https://cdn.jsdelivr.net/gh/jjtheshy/picgo-bed/img/image-20220505084208782.png)
+![image-20220505084208782](https://alibabapicbed.oss-cn-beijing.aliyuncs.com/img/image-20220505084208782.png)
 
 ```java
 public int longestCommonSubsequence(String text1,String text2){
