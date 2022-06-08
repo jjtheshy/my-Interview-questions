@@ -24,15 +24,15 @@
 
 ​	作为Key的原因，处理速度要快过其它的键对象。
 
-## 2.Spring中监听程序启动的三个方法？
+## 2.Spring中监听程序启动的四个方法？
 
-​	①tomcat创建的Listener，但是不是spring创建的，许多对象属性无法注入
+①tomcat创建的Listener，但是不是spring创建的，许多对象属性无法注入
 
-​	②spring本身有一个Listener，在内部创建对象，我们知道对象有init-method方法(postconstruct注解)，
+②spring本身有一个Listener，在内部创建对象，我们知道对象有init-method方法(postconstruct注解)，在这里就能知道方法初始化缓存，对象被创建了
 
-​	 在这里就能知道方法初始化缓存，对象被创建了
+③spring程序启动完成会自动发布一个事件，名称是ContextRefreshedEvent,通过监听它就可以知道程序启动。
 
-​	③spring程序启动完成会自动发布一个事件，名称是ContextRefreshedEvent,通过监听它就可以知道程序启动。
+④实现接口ApplicationRunner或者CommandLineRunner实现run方法,run方法里面可以写要执行的代码,这样就会随着springBoot的启动而起动   
 
 ## 3.CopyOnWriteArrayList集合
 
@@ -289,12 +289,24 @@ Linux下
 
 
 
-## 29. 雪花算法的优势是什么？
+## 29. 雪花算法组成和优势？
 
 1. 雪花算法是去中心化的，因此，具有良好的并发性。
 2. 雪花算法趋势是递增的，利用这一点，它提升了在数据库中，带索引的列插入的效率。当在一颗B+树，每一次新增的数据，如果是整个这棵树中的最大值，那么只需要调整最右下角的部分就可以。
 3. 索引一定提升性能吗？不一定，它再insert  update  delete的时候会降低性能。
 在insert的时候，如果每一次都是整个数据集合的最大值，那么索引对其的影响将是很小的。
+
+雪花算法组成
+
+> 第一个部分是 1 个 bit：0，这个是无意义的。
+>
+> 第二个部分是 41 个 bit：表示的是时间戳。
+>
+> 第三个部分是 5 个 bit：表示的是机房 id，10001。
+>
+> 第四个部分是 5 个 bit：表示的是机器 id，11001。
+>
+> 第五个部分是 12 个 bit：表示的序号，就是某个机房某台机器上这一毫秒内同时生成的 id 的序号，0000 00000000。
 
 ## 29. 网页中的导航栏“首页->订单管理->订单查询”这样的层级结构，应该如何定义表结构来实现？
 | id   | name     | level | parent_id | order_index |
@@ -304,6 +316,72 @@ Linux下
 | 2    | 订单管理 | 2     | 1         | 1           |
 | 3    | 账户管理 | 2     | 1         | 2           |
 | 4    | 订单查询 | 3     | 2         | 1           |
+
+
+
+## 	30. ConcurrentHashMap中key的hash值为负数表示的意思
+
+> ```java
+> static final int HASH_BITS = 0x7fffffff; //01111111111111111111111111111111
+> static final int spread(int h) {
+> return (h ^ (h >>> 16)) & HASH_BITS;
+> }
+> ```
+>
+> (h ^ (h >>> 16)) & int的最大取值范围;
+>
+> 算出来的值不会为负数，都是整数
+>
+> ​	负数有特殊的含义:    **-1**代表正在**扩容**  **-2**代表是一个**树结构**
+
+## 	31. ConcurrentHashMap中如何保证正常情况下key的hash值为正数
+
+> 因为高16位和低16位进行异或运算然后和int的最大取值范围进行与运算了，int的最大取值的最高位为0，所以任何数和他进行与运算，最高位都是0，也就是符号位为0，所以始终为正数。
+
+
+
+## 32. Spring中读取配置文件的几种方式?
+
+1. 通过ResourceBundle类
+
+```
+public class Solution1 {
+    public static void main(String[] args) {
+
+        // 资源包
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("application");
+        String name = resourceBundle.getString("student.name");
+        String age = resourceBundle.getString("student.age");
+        String sex = resourceBundle.getString("student.sex");
+
+        System.out.println("姓名：" + name);
+        System.out.println("年龄：" + age);
+        System.out.println("性别：" + sex);
+    }
+}
+```
+
+2. 通过`@Value("${key}")`主键来获取配置文件中的属性值
+
+3. 通过`configurationProperties`注解和`yml`配置文件,会自动匹配属性
+
+## 	33.阐述SpringBoot启动类中注解
+
+> 启动类上的注解：[@SpringBootApplication]()
+>
+> [@SpringBootApplication]()是一个组合注解
+>
+> - [@SpringBootConfiguration]()：本质就是[@Configuration]()，代表当前类是一个配置类，可以在当前类下编写@Bean注解。
+> - [@EnableAutoConfiguration]()：实现自动装配的**核心**注解。[@EnableAutoConfiguration]()还是一个组合注解，里面有一个核心内容是[@Import(AutoConfigurationImportSelector.class)]()，在[AutoConfigurationImportSelector]()类中就加载了[META-INF/spring.factories]()文件。在[**spring.factories**]()存放着大量已经正好的配置类，只要导入相应的[starter依赖]() ，会自动配置。
+> - [@ComponentScan]()：用来扫描注解的，默认扫描当前类所在包。
+
+
+
+## 34. 如何保证接口的幂等性
+
+前端传入唯一的requestId我们可以将这个id存到Redis或者数据库,当请求过来的时候,先查询数据库是否存在,如果存在说明之前就操作成功过,我们就不重复操作,直接给前端返回`成功`,如果没有就进行操作. 
+
+放入Redis中设置一个过期时间,因为幂等性要求不是一直幂等只是一段时间内的幂等.如果是Mysql数据库就要用定任务将其删掉,防止数据库数据越来越大,这些都是没有实际意义的数据定时清理掉即可.
 
 
 
@@ -785,17 +863,46 @@ public Response limitFlow2(Long id){
 
 
 
+## 3. MySQL InnoDB的MVCC实现机制
+
+InnoDB中实现了事务（多版本并发控制MVCC+锁）， 其中通过MVCC解决隔离性问题。具体而言，**MVCC就是为了实现读-写冲突不加锁**，而这个读指的就是**快照读**, 而非当前读，当**前读实际上是一种加锁的操作，是悲观锁的实现**
+
+- **当前读**
+
+像select lock in share mode(共享锁), select for update ; update, insert ,delete(排他锁)这些操作都是一种当前读，为什么叫当前读？就是它读取的是记录的最新版本，读取时还要保证其他并发事务不能修改当前记录，会对读取的记录进行加锁
+
+- **快照读**
+
+像不加锁的select操作就是快照读，即不加锁的非阻塞读；快照读的前提是隔离级别不是串行级别，串行级别下的快照读会退化成当前读；之所以出现快照读的情况，是基于提高并发性能的考虑，快照读的实现是基于多版本并发控制，即MVCC,可以认为MVCC是行锁的一个变种，但它在很多情况下，避免了加锁操作，降低了开销；既然是基于多版本，即快照读可能读到的并不一定是数据的最新版本，而有可能是之前的历史版本
+
+#### 数据库并发场景?
+
+有三种, 分别为：
+
+- **读-读**：不存在任何问题，也不需要并发控制
+- **读-写**：有线程安全问题，可能会造成事务隔离性问题，可能遇到脏读，幻读，不可重复读
+- **写-写**：有线程安全问题，可能会存在更新丢失问题，比如第一类更新丢失，第二类更新丢失
+
+### MVCC的实现原理
+
+> MVCC的目的就是多版本并发控制，在数据库中的实现，就是为了解决读写冲突，它的实现原理主要是依赖记录中的 **3个隐式字段**，**undo日志** ，**Read View** 来实现的。
+
+#### 四个隐藏字段
+
+每行记录除了我们自定义的字段外，还有数据库隐式定义的DB_TRX_ID,DB_ROLL_PTR,DB_ROW_ID等字段
+
+- **DB_ROW_ID** 6byte, 隐含的自增ID（隐藏主键），如果数据表没有主键，InnoDB会自动以DB_ROW_ID产生一个聚簇索引
+- **DB_TRX_ID** 6byte, 最近修改(修改/插入)事务ID：记录创建这条记录/最后一次修改该记录的事务ID
+- **DB_ROLL_PTR** 7byte, 回滚指针，指向这条记录的上一个版本（存储于rollback segment里）
+- **DELETED_BIT** 1byte, 记录被更新或删除并不代表真的删除，而是删除flag变了
 
 
 
 
 
+## 4. 一条SQL的执行过程?
 
-
-
-
-
-
+![db-mysql-sql-14](https://alibabapicbed.oss-cn-beijing.aliyuncs.com/img/db-mysql-sql-14.png)
 
 
 
